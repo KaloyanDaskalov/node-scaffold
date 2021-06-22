@@ -4,7 +4,7 @@ const { register, login, userSession } = require('../services/auth');
 module.exports = () => async (req, res, next) => {
 
     const user = await validateSession();
-    res.locals.user = user ? user.username : null;
+    res.locals.user = user && user.username;
 
     req.auth = {
         register,
@@ -17,7 +17,7 @@ module.exports = () => async (req, res, next) => {
 
     async function validateSession() {
         const cookie = req.cookies[COOKIE_NAME]
-        let currentSession = false;
+        let currentSession = null;
         try {
             if (cookie) {
                 currentSession = await userSession(cookie);
